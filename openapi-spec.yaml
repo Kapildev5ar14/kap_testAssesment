@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  version: v1.0
+  title: Customer Feedback Form API
+  description: This API receives customer feedback
+
+paths:
+  /feedback:
+    post:
+      summary: Creates the Feedback
+      description: Receive feedback from the UI
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/feedbackRequest'
+        required: true
+      responses:
+        201:
+          $ref: '#/components/responses/feedbackResponse'
+        400:
+          $ref: '#/components/responses/error'
+        500:
+          $ref: '#/components/responses/error'
+
+  "/{feedbackId}":
+    get:
+      summary: returns the Feedback ID
+      description: returns the Feedback
+      parameters:
+        - name: feedbackId
+          in: path
+          description: Unique identifier of the Feedback
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/feedbackResponse"
+
+components:
+  responses:
+    feedbackResponse:
+      description: Successfully received feedback
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/feedbackResponse'
+
+    error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+
+  schemas:
+    feedbackRequest:
+      type: object
+      properties:
+        comment:
+          type: string
+          example: 'I really love this company!'
+        rating:
+          type: string
+          enum:
+            - "Very Unhappy"
+            - "Moderately Unhappy"
+            - "Neutral"
+            - "Moderately Happy"
+            - "Very Happy"
+        email:
+          type: string
+          example: "customer@example.com"
+
+    feedbackResponse:
+      type: object
+      properties:
+        id:
+          type: string
+
+    errorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Database unavailable"
